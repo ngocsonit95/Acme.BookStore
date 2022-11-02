@@ -1,6 +1,9 @@
-﻿using Acme.BookStore.Authors;
+﻿using Abp.Authorization.Users;
+using Acme.BookStore.Authors;
 using Acme.BookStore.Books;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
+using Volo.Abp.Auditing;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -15,6 +18,7 @@ using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using Volo.Abp.Users.EntityFrameworkCore;
 
 namespace Acme.BookStore.EntityFrameworkCore;
 
@@ -70,7 +74,16 @@ public class BookStoreDbContext :
     {
         base.OnModelCreating(builder);
 
-        /* Include modules to your migration db context */
+        builder.Entity<IdentityUser>(b =>
+        {
+            //Sharing the same table "AbpUsers" with the IdentityUser
+            b.ToTable("AppUsers");
+
+            //Configure base properties
+            b.ConfigureByConvention();
+            b.ConfigureAbpUser();
+            //Moved customization of the "AbpUsers" table to an extension method
+        });
 
         builder.ConfigurePermissionManagement();
         builder.ConfigureSettingManagement();
@@ -103,6 +116,16 @@ public class BookStoreDbContext :
                 .HasMaxLength(AuthorConsts.MaxNameLength);
 
             b.HasIndex(x => x.Name);
+        });
+
+        builder.Entity<Book>(b =>
+        {
+            b.ToTable(BookStoreConsts.DbTablePrefix + "Books", BookStoreConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+
+            // ADD THE MAPPING FOR THE RELATION
+            b.HasOne<Author>().WithMany().HasForeignKey(x => x.AuthorId).IsRequired();
         });
 
         //builder.Entity<YourEntity>(b =>

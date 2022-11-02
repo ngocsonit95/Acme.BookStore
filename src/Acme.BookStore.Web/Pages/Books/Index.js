@@ -68,7 +68,25 @@
                 {
                     title: l('CreationTime'), data: "creationTime",
                     dataFormat: "datetime"
-                }
+                },
+                {
+                    title: l('Name'),
+                    data: "name"
+                },
+
+                // ADDED the NEW AUTHOR NAME COLUMN
+                {
+                    title: l('Author'),
+                    data: "authorName"
+                },
+
+                {
+                    title: l('Type'),
+                    data: "type",
+                    render: function (data) {
+                        return l('Enum:BookType:' + data);
+                    }
+                },
             ]
         })
     );

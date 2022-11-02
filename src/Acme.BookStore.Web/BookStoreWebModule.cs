@@ -53,7 +53,7 @@ namespace Acme.BookStore.Web;
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpSwashbuckleModule)
     )]
-public class BookStoreWebModule : AbpModule
+    public class BookStoreWebModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {

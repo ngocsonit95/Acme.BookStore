@@ -13,6 +13,7 @@ using Volo.Abp.PermissionManagement.Identity;
 using Volo.Abp.PermissionManagement.OpenIddict;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
+using Volo.Abp.Auditing;
 
 namespace Acme.BookStore;
 
@@ -36,6 +37,11 @@ public class BookStoreDomainModule : AbpModule
         Configure<AbpMultiTenancyOptions>(options =>
         {
             options.IsEnabled = MultiTenancyConsts.IsEnabled;
+        });
+
+        Configure<AbpAuditingOptions>(options =>
+        {
+            options.HideErrors = false; //Disables the auditing system
         });
 
 #if DEBUG

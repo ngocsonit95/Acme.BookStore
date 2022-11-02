@@ -19,8 +19,7 @@ public class BookStoreDbContextFactory : IDesignTimeDbContextFactory<BookStoreDb
         var configuration = BuildConfiguration();
 
         var builder = new DbContextOptionsBuilder<BookStoreDbContext>()
-            .UseSqlServer(configuration.GetConnectionString("Default"))
-            .ReplaceService<IQueryTranslationPostprocessorFactory, SqlServer2008QueryTranslationPostprocessorFactory>(); //Dùng cho bản Sql Server 2008;
+            .UseSqlServer(configuration.GetConnectionString("Default")); //Dùng cho bản Sql Server 2008;
 
         return new BookStoreDbContext(builder.Options);
     }
